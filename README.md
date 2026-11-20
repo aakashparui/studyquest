@@ -6,6 +6,10 @@ progress lives in your browser.
 **Live: <https://aakashparui.github.io/studyquest/>** — open it on your phone
 and install it to the home screen; it then runs fully offline.
 
+**Android app:
+[download the APK](https://github.com/aakashparui/studyquest/releases/latest/download/StudyQuest.apk)**
+— open that link on your phone and install it.
+
 ---
 
 ## How to run it
@@ -72,6 +76,26 @@ off.
 There is also a native wrapper: a Trusted Web Activity around the deployed
 site, so the installed app updates whenever Pages does — no rebuild, no
 reinstall.
+
+Published builds live on the
+[releases page](https://github.com/aakashparui/studyquest/releases). The link
+below always points at the newest one, which is the easiest way to get it onto
+a phone:
+
+```
+https://github.com/aakashparui/studyquest/releases/latest/download/StudyQuest.apk
+```
+
+To cut a new release after rebuilding:
+
+```powershell
+gh release create v1.1.0 androidStudyQuest.apk --title "StudyQuest 1.1.0 — Android" --notes "..."
+```
+
+Bump `appVersionName` and `appVersionCode` in `twa-manifest.json` first —
+Android refuses to install over an existing app unless the version code goes
+up. Remember this is only needed for changes to the *wrapper* (icon, name,
+permissions); changes to the app itself ship through Pages.
 
 ```powershell
 cd studyquestandroid
