@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.aakashparui.studyquest",
+      "sha256_cert_fingerprints": [
+        "43:28:C5:48:C9:7D:F5:99:A0:D9:96:E0:92:DD:15:67:F2:AA:E4:AD:45:F5:E1:3A:48:3C:D5:DA:FC:43:2F:AD"
+      ]
+    }
+  }
+]

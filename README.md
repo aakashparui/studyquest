@@ -65,6 +65,29 @@ That is what the deployed copy is for: open
 and from then on it opens from the home-screen icon with this laptop switched
 off.
 
+### Android app (APK)
+
+There is also a native wrapper: a Trusted Web Activity around the deployed
+site, so the installed app updates whenever Pages does — no rebuild, no
+reinstall.
+
+```powershell
+cd studyquestandroid
+.setup-android-sdk.ps1            # once: SDK + licences (interactive)
+.uild-apk.ps1                    # produces StudyQuest.apk
+```
+
+`accept-licenses-and-install.ps1` is the non-interactive variant of the first
+step. The build signs with `android.keystore`; **keep that file and
+`keystore.properties`** — Android only accepts an update signed with the same
+key. Both are gitignored.
+
+`assetlinks.json` holds the signing certificate's fingerprint and is published
+at <https://aakashparui.github.io/.well-known/assetlinks.json> from the
+[aakashparui.github.io](https://github.com/aakashparui/aakashparui.github.io)
+repo. That is what lets the app run without a browser URL bar; regenerate it if
+the signing key ever changes.
+
 ### Deployment
 
 Every push to `main` builds and publishes to GitHub Pages via

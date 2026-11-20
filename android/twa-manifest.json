@@ -1,0 +1,43 @@
+{
+  "packageId": "io.github.aakashparui.studyquest",
+  "host": "aakashparui.github.io",
+  "name": "StudyQuest",
+  "launcherName": "StudyQuest",
+  "display": "standalone",
+  "themeColor": "#080a14",
+  "themeColorDark": "#080a14",
+  "navigationColor": "#080a14",
+  "navigationColorDark": "#080a14",
+  "navigationDividerColor": "#080a14",
+  "navigationDividerColorDark": "#080a14",
+  "backgroundColor": "#080a14",
+  "enableNotifications": true,
+  "startUrl": "/studyquest/",
+  "iconUrl": "https://aakashparui.github.io/studyquest/icons/icon-512.png",
+  "maskableIconUrl": "https://aakashparui.github.io/studyquest/icons/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "studyquest"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://aakashparui.github.io/studyquest/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://aakashparui.github.io/studyquest/",
+  "minSdkVersion": 24,
+  "orientation": "default",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1.0.0"
+}

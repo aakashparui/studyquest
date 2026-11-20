@@ -1,0 +1,26 @@
+# Signing keys must never be committed — losing or leaking one means you can
+# no longer ship updates that Android accepts as the same app.
+*.keystore
+*.jks
+keystore.properties
+
+# Generated Android project and build output. `bubblewrap update` recreates
+# all of this from twa-manifest.json.
+app/
+gradle/
+gradlew
+gradlew.bat
+build.gradle
+settings.gradle
+gradle.properties
+local.properties
+build/
+.gradle/
+# assetlinks.json is published to the site repo, keep it here for reference
+!assetlinks.json
+
+*.apk
+*.aab
+*.idsig
+store_icon.png
+manifest-checksum.txt
