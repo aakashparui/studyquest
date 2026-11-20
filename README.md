@@ -23,6 +23,8 @@ Then open <http://localhost:5180>.
 | `npm run dev` | Dev server with hot reload on port 5180 |
 | `npm run build` | Typecheck, bundle to `dist/`, then write the service worker's precache list |
 | `npm run preview` | Serve the built bundle on port 5181 |
+| `npm test` | Run the test suite once |
+| `npm run test:watch` | Re-run tests as you edit |
 | `npm run lint` | Lint with oxlint |
 | `npm run icons` | Regenerate the app icons in `public/icons/` |
 
@@ -196,6 +198,42 @@ statistics can be reasoned about (and tested) without React.
   API — no streaming, no audio files.
 - Keyboard: `Space` start/pause, `R` reset, `S` skip, `F` focus mode, `Esc` exit.
 - Export / import your data as JSON; reset behind a confirmation dialog.
+
+---
+
+## Tests
+
+```powershell
+cd studyquest; npm test
+```
+
+180 tests over the pure logic in `lib/` — the scoring, streak, statistics,
+achievement and save-parsing code. There are no component tests: the value is
+in the maths, because a bug there does not crash, it quietly hands you a wrong
+number that you would not notice for weeks.
+
+What they cover:
+
+- **Scoring** — base XP, every bonus *and its exact amount*, the daily-goal
+  bonus paying once per day, combo and cycle counting, level-up detection,
+  abandoned runs never costing XP.
+- **Streaks** — the yesterday grace period, breaking after a missed day,
+  stopping at the first gap, and rolling over midnight, month, year and a
+  leap day. Dates are frozen with fake timers, so these are deterministic.
+- **Statistics** — what counts as a Pomodoro, today/week/month buckets,
+  per-subject totals, the Monday-first week, re-bucketing when the day turns.
+- **Achievements** — each unlock threshold from both sides, and that nothing
+  unlocks twice.
+- **Storage** — truncated, clamped and outright hostile save data all parse
+  into something usable rather than throwing.
+
+The suite was checked by mutation: deliberately breaking the streak grace
+period, the XP rate, the no-pause bonus and the once-per-day goal guard each
+produce failures. That last pass caught a real gap — the tests originally
+asserted that a bonus *appeared*, never that it was worth the right amount, so
+setting it to zero passed. They now assert the amounts.
+
+`npm test` and `npm run lint` both run in CI before anything deploys.
 
 ---
 

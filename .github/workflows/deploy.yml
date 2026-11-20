@@ -28,6 +28,11 @@ jobs:
 
       - run: npm ci
 
+      # A failing suite must stop the deploy, not ship broken XP or streak maths.
+      - run: npm test
+
+      - run: npm run lint
+
       - run: npm run build
         env:
           # Project sites are served from https://<user>.github.io/studyquest/
