@@ -77,6 +77,7 @@ function makeRecord(
     id: createId('ses'),
     phase: timer.phase,
     goal: timer.goal,
+    notes: '',
     plannedMinutes: Math.round(timer.durationSeconds / 60),
     focusedSeconds: Math.max(0, Math.round(run.focusedSeconds)),
     completed,
@@ -194,6 +195,7 @@ export function completeFocusRun(
   }
 
   const summary: CompletionSummary = {
+    recordId: record.id,
     phase: 'focus',
     minutes,
     subjectName: record.subjectName,
@@ -225,6 +227,7 @@ export function completeBreakRun(state: StudyState, run: FinishedRun): Completio
     cycleCount: run.timer.phase === 'longBreak' ? 0 : state.cycleCount,
   };
   const summary: CompletionSummary = {
+    recordId: record.id,
     phase: run.timer.phase,
     minutes: Math.max(1, Math.round(run.timer.durationSeconds / 60)),
     subjectName: record.subjectName,

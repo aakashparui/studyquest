@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import { ArrowRight, Flame } from 'lucide-react';
 import type { CompletionSummary } from '../../types/study';
@@ -12,17 +13,57 @@ export function SessionComplete({
   mascotMessage,
   onDismiss,
   onStartNext,
+  onSaveNotes,
   running,
 }: {
   summary: CompletionSummary;
   mascotMessage: string;
   onDismiss: () => void;
   onStartNext: () => void;
+  /** Stores what the user actually covered, against this session. */
+  onSaveNotes: (notes: string) => void;
   /** True when the next phase was auto-started behind the overlay. */
   running: boolean;
 }): ReactElement {
   const isFocus = summary.phase === 'focus';
   const nextLabel = PHASE_LABEL[summary.nextPhase];
+
+  // Held locally and written on blur or on the way out, so the whole app
+  // doesn't re-derive its statistics on every keystroke.
+  const [notes, setNotes] = useState('');
+  const latestRef = useRef('');
+  const savedRef = useRef('');
+  const saveRef = useRef(onSaveNotes);
+
+  useEffect(() => {
+    saveRef.current = onSaveNotes;
+  }, [onSaveNotes]);
+
+  const saveNotes = (): void => {
+    if (latestRef.current === savedRef.current) return;
+    savedRef.current = latestRef.current;
+    saveRef.current(latestRef.current);
+  };
+
+  // Escape closes the overlay without blurring the field, so flush on unmount.
+  useEffect(() => {
+    return () => {
+      if (latestRef.current !== savedRef.current) {
+        savedRef.current = latestRef.current;
+        saveRef.current(latestRef.current);
+      }
+    };
+  }, []);
+
+  const changeNotes = (value: string): void => {
+    latestRef.current = value;
+    setNotes(value);
+  };
+
+  const leave = (next: () => void) => (): void => {
+    saveNotes();
+    next();
+  };
 
   return (
     <div
@@ -121,6 +162,29 @@ export function SessionComplete({
                 🆙 Level {summary.levelUp.to} — {summary.levelUp.title}
               </p>
             )}
+
+            <div className="mt-4 text-left">
+              <label
+                htmlFor="session-notes"
+                className="mb-1.5 block text-[11px] font-semibold tracking-wider text-muted uppercase"
+              >
+                What did you cover?
+                <span className="ml-1.5 text-faint normal-case">(optional)</span>
+              </label>
+              <textarea
+                id="session-notes"
+                rows={2}
+                value={notes}
+                maxLength={500}
+                onChange={(event) => changeNotes(event.target.value)}
+                onBlur={saveNotes}
+                placeholder="e.g. pacs.008 vs pain.001, still shaky on settlement cycles"
+                className="w-full resize-none rounded-xl border border-line bg-raised/70 px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-brand-soft/70 focus:outline-none"
+              />
+              <p className="mt-1 text-[11px] text-faint">
+                Shows up in your history — turns the log into something you can revise from.
+              </p>
+            </div>
           </>
         )}
 
@@ -129,13 +193,13 @@ export function SessionComplete({
             quiet
             variant="primary"
             size="lg"
-            onClick={running ? onDismiss : onStartNext}
+            onClick={leave(running ? onDismiss : onStartNext)}
             icon={<ArrowRight size={18} aria-hidden />}
           >
             {running ? `${nextLabel} running — continue` : `Start ${nextLabel.toLowerCase()}`}
           </Button>
           {!running && (
-            <Button variant="ghost" size="lg" onClick={onDismiss}>
+            <Button variant="ghost" size="lg" onClick={leave(onDismiss)}>
               Not yet
             </Button>
           )}

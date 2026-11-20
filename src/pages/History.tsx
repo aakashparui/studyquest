@@ -9,7 +9,7 @@ import { formatDuration, pluralise } from '../lib/format';
 type Filter = 'all' | 'focus' | 'subject';
 
 export function HistoryPage(): ReactElement {
-  const { state, stats, selectedSubjectId } = useStudy();
+  const { state, stats, selectedSubjectId, setSessionNotes } = useStudy();
   const [filter, setFilter] = useState<Filter>('focus');
 
   const sessions = useMemo(() => {
@@ -45,7 +45,7 @@ export function HistoryPage(): ReactElement {
           ]}
         />
       </div>
-      <SessionList sessions={sessions} />
+      <SessionList sessions={sessions} onSaveNotes={setSessionNotes} />
     </Card>
   );
 }

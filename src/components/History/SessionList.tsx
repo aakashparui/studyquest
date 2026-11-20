@@ -5,11 +5,19 @@ import { clockTime, friendlyDay } from '../../lib/date';
 import { formatDuration, pluralise } from '../../lib/format';
 import { groupSessionsByDay } from '../../lib/statistics';
 import { EmptyState } from '../ui/Controls';
+import { SessionNotes } from './SessionNotes';
 
-function SessionRow({ session }: { session: SessionRecord }): ReactElement {
+function SessionRow({
+  session,
+  onSaveNotes,
+}: {
+  session: SessionRecord;
+  onSaveNotes: (notes: string) => void;
+}): ReactElement {
   const isBreak = session.phase !== 'focus';
   return (
-    <li className="flex items-center gap-3 rounded-2xl border border-line/80 bg-raised/35 p-3">
+    <li className="rounded-2xl border border-line/80 bg-raised/35 p-3">
+      <div className="flex items-center gap-3">
       <span
         aria-hidden
         className="grid size-10 shrink-0 place-items-center rounded-xl text-lg"
@@ -51,12 +59,27 @@ function SessionRow({ session }: { session: SessionRecord }): ReactElement {
         {session.xpEarned > 0 && (
           <span className="num text-xs font-bold text-brand-soft">+{session.xpEarned} XP</span>
         )}
+        </div>
       </div>
+
+      {!isBreak && (
+        <SessionNotes
+          notes={session.notes}
+          onSave={onSaveNotes}
+          label={`${session.subjectName} at ${clockTime(session.endedAt)}`}
+        />
+      )}
     </li>
   );
 }
 
-export function SessionList({ sessions }: { sessions: SessionRecord[] }): ReactElement {
+export function SessionList({
+  sessions,
+  onSaveNotes,
+}: {
+  sessions: SessionRecord[];
+  onSaveNotes: (sessionId: string, notes: string) => void;
+}): ReactElement {
   const grouped = groupSessionsByDay(sessions);
 
   if (grouped.length === 0) {
@@ -86,7 +109,11 @@ export function SessionList({ sessions }: { sessions: SessionRecord[] }): ReactE
             </header>
             <ul className="space-y-2">
               {entries.map((session) => (
-                <SessionRow key={session.id} session={session} />
+                <SessionRow
+                  key={session.id}
+                  session={session}
+                  onSaveNotes={(notes) => onSaveNotes(session.id, notes)}
+                />
               ))}
             </ul>
           </section>

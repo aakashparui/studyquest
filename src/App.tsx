@@ -61,6 +61,7 @@ function AppShell(): ReactElement {
     skip,
     selectedSubjectId,
     goal,
+    setSessionNotes,
   } = study;
 
   // The audio context can only start from a gesture; do it once, globally.
@@ -144,6 +145,7 @@ function AppShell(): ReactElement {
           mascotMessage={mascot.message}
           onDismiss={dismissCompletion}
           onStartNext={startNext}
+          onSaveNotes={(notes) => setSessionNotes(completion.recordId, notes)}
           running={timer.isRunning}
         />
       )}

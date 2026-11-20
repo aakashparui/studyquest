@@ -28,6 +28,8 @@ export interface SessionRecord {
   subjectIcon: string;
   subjectColor: string;
   goal: string;
+  /** Written after the fact: what you actually covered. */
+  notes: string;
   plannedMinutes: number;
   focusedSeconds: number;
   completed: boolean;
@@ -109,6 +111,8 @@ export interface StudyEvent {
 
 /** Summary handed to the completion overlay. */
 export interface CompletionSummary {
+  /** The session this summary describes, so notes can be attached to it. */
+  recordId: string;
   phase: Phase;
   minutes: number;
   subjectName: string;

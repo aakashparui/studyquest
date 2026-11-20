@@ -211,6 +211,9 @@ statistics can be reasoned about (and tested) without React.
 - Statistics: totals, averages, today/week/month, per-subject split, most
   productive weekday and time of day.
 - History grouped by day, with duration, subject, completion status and XP.
+- **Session notes** — a line on what you actually covered, written on the
+  completion screen or added later from history, so the log reads as a
+  revision index rather than a list of timestamps.
 
 **Experience**
 - Dark by default, light theme available, glassmorphism with a slow ambient
@@ -231,10 +234,10 @@ statistics can be reasoned about (and tested) without React.
 cd studyquest; npm test
 ```
 
-180 tests over the pure logic in `lib/` — the scoring, streak, statistics,
-achievement and save-parsing code. There are no component tests: the value is
-in the maths, because a bug there does not crash, it quietly hands you a wrong
-number that you would not notice for weeks.
+216 tests. Most cover the pure logic in `lib/` — scoring, streaks,
+statistics, achievements and save parsing — because a bug there does not
+crash, it quietly hands you a wrong number you would not notice for weeks.
+The rest cover `useTimer`, the one stateful piece.
 
 What they cover:
 
@@ -250,12 +253,23 @@ What they cover:
   unlocks twice.
 - **Storage** — truncated, clamped and outright hostile save data all parse
   into something usable rather than throwing.
+- **The timer** (`useTimer`, under jsdom) — counting down from timestamps
+  rather than a decrementing counter, pausing without consuming the session,
+  resuming, stopping early, restoring mid-session after a reload, crediting a
+  run that finished while the tab was shut, refusing one that ended hours ago,
+  and catching up after a throttled background tab. One test mounts it under
+  `StrictMode` to prove an expired run is credited **once**, not twice.
 
-The suite was checked by mutation: deliberately breaking the streak grace
-period, the XP rate, the no-pause bonus and the once-per-day goal guard each
-produce failures. That last pass caught a real gap — the tests originally
-asserted that a bonus *appeared*, never that it was worth the right amount, so
-setting it to zero passed. They now assert the amounts.
+The suite is checked by mutation: deliberately breaking the streak grace
+period, the XP rate, the no-pause bonus, the once-per-day goal guard, the
+stale-run threshold, the resume arithmetic and the timer's fire-once guard
+each produce failures.
+
+That exercise has twice found real gaps. First, bonuses were asserted to
+*appear* but not to be worth the right amount, so zeroing one passed. Then the
+timer's fire-once guard could be deleted with everything still green, because
+no test reproduced the double-invoked effect it exists to defend against —
+hence the `StrictMode` test.
 
 `npm test` and `npm run lint` both run in CI before anything deploys.
 

@@ -458,6 +458,19 @@ export function StudyProvider({ children }: { children: ReactNode }): ReactEleme
     [update],
   );
 
+  const setSessionNotes = useCallback(
+    (sessionId: string, notes: string) => {
+      const trimmed = notes.slice(0, 500);
+      update((prev) => ({
+        ...prev,
+        sessions: prev.sessions.map((session) =>
+          session.id === sessionId ? { ...session, notes: trimmed } : session,
+        ),
+      }));
+    },
+    [update],
+  );
+
   const updateTimerSettings = useCallback(
     (patch: Partial<TimerSettings>) => {
       update((prev) => ({ ...prev, timer: { ...prev.timer, ...patch } }));
@@ -592,6 +605,7 @@ export function StudyProvider({ children }: { children: ReactNode }): ReactEleme
     updateSubject,
     deleteSubject,
     setDailyGoal,
+    setSessionNotes,
     updateTimerSettings,
     updatePrefs,
     resetAll,

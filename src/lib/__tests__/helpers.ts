@@ -40,6 +40,7 @@ export function makeSession(at: Date, patch: Partial<SessionRecord> = {}): Sessi
     subjectIcon: '📚',
     subjectColor: '#8b5cf6',
     goal: '',
+    notes: '',
     plannedMinutes: minutes,
     focusedSeconds: minutes * 60,
     completed: true,

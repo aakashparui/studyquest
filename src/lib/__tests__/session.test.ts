@@ -242,6 +242,26 @@ describe('completeFocusRun — the session record', () => {
     expect(record.phase).toBe('focus');
   });
 
+  it('starts with an empty note and points the summary at the record', () => {
+    const { record, summary } = completeFocusRun(
+      makeState(),
+      makeRun({}, NOW.getTime()),
+      noLuck,
+    );
+    expect(record.notes).toBe('');
+    expect(summary.recordId).toBe(record.id);
+  });
+
+  it('gives each session a distinct id so notes land on the right one', () => {
+    const first = completeFocusRun(makeState(), makeRun({}, NOW.getTime()), noLuck);
+    const second = completeFocusRun(first.state, makeRun({}, NOW.getTime()), noLuck);
+    expect(second.record.id).not.toBe(first.record.id);
+    expect(second.state.sessions.map((entry) => entry.id)).toEqual([
+      first.record.id,
+      second.record.id,
+    ]);
+  });
+
   it('remembers the subject and goal for the next session', () => {
     const { state } = completeFocusRun(
       makeState(),

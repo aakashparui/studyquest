@@ -157,6 +157,7 @@ function parseSession(raw: unknown): SessionRecord | null {
     subjectIcon: str(raw.subjectIcon, '📘'),
     subjectColor: str(raw.subjectColor, '#8b5cf6'),
     goal: str(raw.goal),
+    notes: str(raw.notes).slice(0, 500),
     plannedMinutes: num(raw.plannedMinutes, 25, 1, 600),
     focusedSeconds: num(raw.focusedSeconds, 0, 0, 86_400),
     completed: bool(raw.completed, true),

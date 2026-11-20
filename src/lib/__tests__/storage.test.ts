@@ -112,6 +112,44 @@ describe('parseState — rubbish in, usable state out', () => {
   });
 });
 
+describe('parseState — session notes', () => {
+  it('keeps a note through a round trip', () => {
+    const session = makeSession(localDay(2026, 4, 15, 14), {
+      notes: 'pacs.008 vs pain.001, shaky on settlement cycles',
+    });
+    const parsed = parseState({ sessions: [session] });
+    expect(parsed.sessions[0]?.notes).toBe(session.notes);
+  });
+
+  it('defaults a missing note to empty rather than undefined', () => {
+    const session = makeSession(localDay(2026, 4, 15, 14));
+    const { notes, ...withoutNotes } = session;
+    void notes;
+    const parsed = parseState({ sessions: [withoutNotes] });
+    expect(parsed.sessions[0]?.notes).toBe('');
+  });
+
+  it('ignores a note that is not a string', () => {
+    const session = makeSession(localDay(2026, 4, 15, 14));
+    const parsed = parseState({ sessions: [{ ...session, notes: { evil: true } }] });
+    expect(parsed.sessions[0]?.notes).toBe('');
+  });
+
+  it('caps a very long note', () => {
+    const session = makeSession(localDay(2026, 4, 15, 14), { notes: 'x'.repeat(5000) });
+    const parsed = parseState({ sessions: [session] });
+    expect(parsed.sessions[0]?.notes.length).toBeLessThanOrEqual(500);
+  });
+
+  it('carries notes through export and import', () => {
+    const state = makeState({
+      sessions: [makeSession(localDay(2026, 4, 15, 14), { notes: 'ISO 20022 message types' })],
+    });
+    const restored = parseImport(JSON.stringify(buildExport(state)));
+    expect(restored.sessions[0]?.notes).toBe('ISO 20022 message types');
+  });
+});
+
 describe('parseActiveTimer', () => {
   const base = {
     phase: 'focus',

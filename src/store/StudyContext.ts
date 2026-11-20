@@ -57,6 +57,8 @@ export interface StudyContextValue {
   updateSubject: (id: string, patch: Partial<Omit<Subject, 'id' | 'createdAt'>>) => void;
   deleteSubject: (id: string) => void;
   setDailyGoal: (pomodoros: number) => void;
+  /** Attach or replace the note on a logged session. */
+  setSessionNotes: (sessionId: string, notes: string) => void;
   updateTimerSettings: (patch: Partial<TimerSettings>) => void;
   updatePrefs: (patch: Partial<Preferences>) => void;
   resetAll: () => void;
