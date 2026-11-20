@@ -3,6 +3,9 @@
 A gamified Pomodoro study timer. Local-first, no backend, no account — all your
 progress lives in your browser.
 
+**Live: <https://aakashparui.github.io/studyquest/>** — open it on your phone
+and install it to the home screen; it then runs fully offline.
+
 ---
 
 ## How to run it
@@ -57,22 +60,22 @@ available, and shows the Share-sheet steps on iOS.
 register there and no install will be offered. Over the LAN the app still runs
 fine in the phone's browser; it just isn't installable or offline-capable.
 
-To get the real thing on your phone, publish the `dist/` folder to any static
-host with HTTPS — Netlify, Vercel, Cloudflare Pages and GitHub Pages all do this
-free:
+That is what the deployed copy is for: open
+**<https://aakashparui.github.io/studyquest/>** on your phone, install it once,
+and from then on it opens from the home-screen icon with this laptop switched
+off.
 
-```powershell
-cd studyquest; npm run build
-```
+### Deployment
 
-then drop `studyquest/dist` into the host. Open the HTTPS URL on your phone once
-and install it; after that it opens from the icon with your laptop switched off.
-For a quick temporary URL, a tunnel such as `cloudflared tunnel --url
-http://localhost:5181` also gives you HTTPS.
+Every push to `main` builds and publishes to GitHub Pages via
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml). Pages project
+sites are served from a sub-path, so the workflow builds with
+`BASE_PATH=/studyquest/`; locally the base stays `/`. The manifest, the worker
+and its registration all use relative paths, so the same build works at a root
+domain too.
 
-If you host under a sub-path (GitHub Pages project sites, e.g.
-`user.github.io/studyquest/`), set `base: '/studyquest/'` in `vite.config.ts`
-first. The manifest, worker and registration all use relative paths already.
+To deploy somewhere else instead, `npm run build` and upload `dist/` to any
+static host with HTTPS.
 
 **How the offline cache works.** `npm run build` runs
 `scripts/inject-precache.mjs`, which writes the build's hashed asset filenames
